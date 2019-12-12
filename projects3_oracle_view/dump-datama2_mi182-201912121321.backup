@@ -1,0 +1,996 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.10 (Ubuntu 10.10-0ubuntu0.18.04.1)
+-- Dumped by pg_dump version 12.0
+
+-- Started on 2019-12-12 13:21:58
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'SQL_ASCII';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 30 (class 2615 OID 18549)
+-- Name: jbcaridad; Type: SCHEMA; Schema: -; Owner: datama2mi182
+--
+
+CREATE SCHEMA jbcaridad;
+
+
+ALTER SCHEMA jbcaridad OWNER TO datama2mi182;
+
+SET default_tablespace = '';
+
+--
+-- TOC entry 586 (class 1259 OID 27874)
+-- Name: customer; Type: TABLE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE TABLE jbcaridad.customer (
+    id integer NOT NULL,
+    cust_lname character varying(9) DEFAULT NULL::character varying NOT NULL,
+    cust_fname character varying(8) DEFAULT NULL::character varying NOT NULL,
+    cust_add character varying(6) DEFAULT NULL::character varying NOT NULL,
+    cust_phone integer NOT NULL,
+    resto_id smallint NOT NULL
+);
+
+
+ALTER TABLE jbcaridad.customer OWNER TO datama2mi182;
+
+--
+-- TOC entry 585 (class 1259 OID 27872)
+-- Name: customer_id_seq; Type: SEQUENCE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE SEQUENCE jbcaridad.customer_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE jbcaridad.customer_id_seq OWNER TO datama2mi182;
+
+--
+-- TOC entry 4315 (class 0 OID 0)
+-- Dependencies: 585
+-- Name: customer_id_seq; Type: SEQUENCE OWNED BY; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER SEQUENCE jbcaridad.customer_id_seq OWNED BY jbcaridad.customer.id;
+
+
+--
+-- TOC entry 574 (class 1259 OID 27815)
+-- Name: order_header; Type: TABLE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE TABLE jbcaridad.order_header (
+    id integer NOT NULL,
+    oh_date character varying(10) DEFAULT NULL::character varying NOT NULL,
+    order_stat character varying(9) DEFAULT NULL::character varying NOT NULL,
+    customer_id smallint NOT NULL,
+    order_detail_id smallint NOT NULL
+);
+
+
+ALTER TABLE jbcaridad.order_header OWNER TO datama2mi182;
+
+--
+-- TOC entry 587 (class 1259 OID 27883)
+-- Name: customer_order; Type: VIEW; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE VIEW jbcaridad.customer_order AS
+ SELECT customer.id,
+    customer.cust_lname,
+    customer.cust_fname,
+    customer.cust_add,
+    customer.cust_phone,
+    order_header.oh_date,
+    order_header.order_stat,
+    order_header.order_detail_id
+   FROM (jbcaridad.customer
+     JOIN jbcaridad.order_header ON ((order_header.customer_id = customer.id)));
+
+
+ALTER TABLE jbcaridad.customer_order OWNER TO datama2mi182;
+
+--
+-- TOC entry 566 (class 1259 OID 27773)
+-- Name: employee; Type: TABLE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE TABLE jbcaridad.employee (
+    id integer NOT NULL,
+    emp_lname character varying(1) DEFAULT NULL::character varying NOT NULL,
+    emp_fname character varying(1) DEFAULT NULL::character varying NOT NULL,
+    emp_add character varying(1) DEFAULT NULL::character varying NOT NULL,
+    emp_email character varying(1) DEFAULT NULL::character varying,
+    emp_phone character varying(1) DEFAULT NULL::character varying,
+    emp_type character varying(1) DEFAULT NULL::character varying NOT NULL,
+    resto_id smallint NOT NULL
+);
+
+
+ALTER TABLE jbcaridad.employee OWNER TO datama2mi182;
+
+--
+-- TOC entry 565 (class 1259 OID 27771)
+-- Name: employee_id_seq; Type: SEQUENCE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE SEQUENCE jbcaridad.employee_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE jbcaridad.employee_id_seq OWNER TO datama2mi182;
+
+--
+-- TOC entry 4316 (class 0 OID 0)
+-- Dependencies: 565
+-- Name: employee_id_seq; Type: SEQUENCE OWNED BY; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER SEQUENCE jbcaridad.employee_id_seq OWNED BY jbcaridad.employee.id;
+
+
+--
+-- TOC entry 568 (class 1259 OID 27787)
+-- Name: food; Type: TABLE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE TABLE jbcaridad.food (
+    id integer NOT NULL,
+    food_name character varying(18) DEFAULT NULL::character varying NOT NULL,
+    food_price smallint NOT NULL,
+    food_type character varying(12) DEFAULT NULL::character varying NOT NULL
+);
+
+
+ALTER TABLE jbcaridad.food OWNER TO datama2mi182;
+
+--
+-- TOC entry 567 (class 1259 OID 27785)
+-- Name: food_id_seq; Type: SEQUENCE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE SEQUENCE jbcaridad.food_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE jbcaridad.food_id_seq OWNER TO datama2mi182;
+
+--
+-- TOC entry 4317 (class 0 OID 0)
+-- Dependencies: 567
+-- Name: food_id_seq; Type: SEQUENCE OWNED BY; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER SEQUENCE jbcaridad.food_id_seq OWNED BY jbcaridad.food.id;
+
+
+--
+-- TOC entry 570 (class 1259 OID 27797)
+-- Name: ingredients; Type: TABLE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE TABLE jbcaridad.ingredients (
+    id integer NOT NULL,
+    ingredient_code smallint,
+    ingredient_desc smallint
+);
+
+
+ALTER TABLE jbcaridad.ingredients OWNER TO datama2mi182;
+
+--
+-- TOC entry 569 (class 1259 OID 27795)
+-- Name: ingredients_id_seq; Type: SEQUENCE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE SEQUENCE jbcaridad.ingredients_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE jbcaridad.ingredients_id_seq OWNER TO datama2mi182;
+
+--
+-- TOC entry 4318 (class 0 OID 0)
+-- Dependencies: 569
+-- Name: ingredients_id_seq; Type: SEQUENCE OWNED BY; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER SEQUENCE jbcaridad.ingredients_id_seq OWNED BY jbcaridad.ingredients.id;
+
+
+--
+-- TOC entry 572 (class 1259 OID 27805)
+-- Name: order_detail; Type: TABLE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE TABLE jbcaridad.order_detail (
+    id integer NOT NULL,
+    od_quantity smallint NOT NULL,
+    od_item character varying(51) DEFAULT NULL::character varying NOT NULL,
+    od_remarks character varying(1) DEFAULT NULL::character varying,
+    food_id smallint NOT NULL
+);
+
+
+ALTER TABLE jbcaridad.order_detail OWNER TO datama2mi182;
+
+--
+-- TOC entry 571 (class 1259 OID 27803)
+-- Name: order_detail_id_seq; Type: SEQUENCE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE SEQUENCE jbcaridad.order_detail_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE jbcaridad.order_detail_id_seq OWNER TO datama2mi182;
+
+--
+-- TOC entry 4319 (class 0 OID 0)
+-- Dependencies: 571
+-- Name: order_detail_id_seq; Type: SEQUENCE OWNED BY; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER SEQUENCE jbcaridad.order_detail_id_seq OWNED BY jbcaridad.order_detail.id;
+
+
+--
+-- TOC entry 573 (class 1259 OID 27813)
+-- Name: order_header_id_seq; Type: SEQUENCE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE SEQUENCE jbcaridad.order_header_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE jbcaridad.order_header_id_seq OWNER TO datama2mi182;
+
+--
+-- TOC entry 4320 (class 0 OID 0)
+-- Dependencies: 573
+-- Name: order_header_id_seq; Type: SEQUENCE OWNED BY; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER SEQUENCE jbcaridad.order_header_id_seq OWNED BY jbcaridad.order_header.id;
+
+
+--
+-- TOC entry 576 (class 1259 OID 27825)
+-- Name: payment; Type: TABLE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE TABLE jbcaridad.payment (
+    id integer NOT NULL,
+    payment_amount_total smallint NOT NULL,
+    payment_amount_paid smallint NOT NULL,
+    payment_tax smallint,
+    payment_discount smallint,
+    payment_change smallint,
+    payment_reference_num smallint,
+    order_header_id smallint NOT NULL
+);
+
+
+ALTER TABLE jbcaridad.payment OWNER TO datama2mi182;
+
+--
+-- TOC entry 575 (class 1259 OID 27823)
+-- Name: payment_id_seq; Type: SEQUENCE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE SEQUENCE jbcaridad.payment_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE jbcaridad.payment_id_seq OWNER TO datama2mi182;
+
+--
+-- TOC entry 4321 (class 0 OID 0)
+-- Dependencies: 575
+-- Name: payment_id_seq; Type: SEQUENCE OWNED BY; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER SEQUENCE jbcaridad.payment_id_seq OWNED BY jbcaridad.payment.id;
+
+
+--
+-- TOC entry 578 (class 1259 OID 27833)
+-- Name: purchase_order; Type: TABLE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE TABLE jbcaridad.purchase_order (
+    id integer NOT NULL,
+    supplier_id smallint NOT NULL,
+    resto_id smallint NOT NULL,
+    po_order_date character varying(1) DEFAULT NULL::character varying NOT NULL,
+    po_delivery_date character varying(1) DEFAULT NULL::character varying NOT NULL,
+    po_order_stat character varying(1) DEFAULT NULL::character varying NOT NULL
+);
+
+
+ALTER TABLE jbcaridad.purchase_order OWNER TO datama2mi182;
+
+--
+-- TOC entry 577 (class 1259 OID 27831)
+-- Name: purchase_order_id_seq; Type: SEQUENCE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE SEQUENCE jbcaridad.purchase_order_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE jbcaridad.purchase_order_id_seq OWNER TO datama2mi182;
+
+--
+-- TOC entry 4322 (class 0 OID 0)
+-- Dependencies: 577
+-- Name: purchase_order_id_seq; Type: SEQUENCE OWNED BY; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER SEQUENCE jbcaridad.purchase_order_id_seq OWNED BY jbcaridad.purchase_order.id;
+
+
+--
+-- TOC entry 580 (class 1259 OID 27844)
+-- Name: recipe; Type: TABLE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE TABLE jbcaridad.recipe (
+    id integer NOT NULL,
+    food_id smallint NOT NULL,
+    ingredients_id smallint NOT NULL
+);
+
+
+ALTER TABLE jbcaridad.recipe OWNER TO datama2mi182;
+
+--
+-- TOC entry 579 (class 1259 OID 27842)
+-- Name: recipe_id_seq; Type: SEQUENCE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE SEQUENCE jbcaridad.recipe_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE jbcaridad.recipe_id_seq OWNER TO datama2mi182;
+
+--
+-- TOC entry 4323 (class 0 OID 0)
+-- Dependencies: 579
+-- Name: recipe_id_seq; Type: SEQUENCE OWNED BY; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER SEQUENCE jbcaridad.recipe_id_seq OWNED BY jbcaridad.recipe.id;
+
+
+--
+-- TOC entry 582 (class 1259 OID 27852)
+-- Name: resto; Type: TABLE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE TABLE jbcaridad.resto (
+    id integer NOT NULL,
+    resto_name character varying(10) DEFAULT NULL::character varying NOT NULL,
+    resto_found_date character varying(10) DEFAULT NULL::character varying NOT NULL,
+    resto_owner character varying(14) DEFAULT NULL::character varying NOT NULL
+);
+
+
+ALTER TABLE jbcaridad.resto OWNER TO datama2mi182;
+
+--
+-- TOC entry 581 (class 1259 OID 27850)
+-- Name: resto_id_seq; Type: SEQUENCE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE SEQUENCE jbcaridad.resto_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE jbcaridad.resto_id_seq OWNER TO datama2mi182;
+
+--
+-- TOC entry 4324 (class 0 OID 0)
+-- Dependencies: 581
+-- Name: resto_id_seq; Type: SEQUENCE OWNED BY; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER SEQUENCE jbcaridad.resto_id_seq OWNED BY jbcaridad.resto.id;
+
+
+--
+-- TOC entry 584 (class 1259 OID 27863)
+-- Name: supplier; Type: TABLE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE TABLE jbcaridad.supplier (
+    id integer NOT NULL,
+    supplier_name character varying(1) DEFAULT NULL::character varying NOT NULL,
+    supplier_loc character varying(1) DEFAULT NULL::character varying NOT NULL,
+    partners_num character varying(1) DEFAULT NULL::character varying NOT NULL
+);
+
+
+ALTER TABLE jbcaridad.supplier OWNER TO datama2mi182;
+
+--
+-- TOC entry 583 (class 1259 OID 27861)
+-- Name: supplier_id_seq; Type: SEQUENCE; Schema: jbcaridad; Owner: datama2mi182
+--
+
+CREATE SEQUENCE jbcaridad.supplier_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE jbcaridad.supplier_id_seq OWNER TO datama2mi182;
+
+--
+-- TOC entry 4325 (class 0 OID 0)
+-- Dependencies: 583
+-- Name: supplier_id_seq; Type: SEQUENCE OWNED BY; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER SEQUENCE jbcaridad.supplier_id_seq OWNED BY jbcaridad.supplier.id;
+
+
+--
+-- TOC entry 4085 (class 2604 OID 27877)
+-- Name: customer id; Type: DEFAULT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.customer ALTER COLUMN id SET DEFAULT nextval('jbcaridad.customer_id_seq'::regclass);
+
+
+--
+-- TOC entry 4054 (class 2604 OID 27776)
+-- Name: employee id; Type: DEFAULT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.employee ALTER COLUMN id SET DEFAULT nextval('jbcaridad.employee_id_seq'::regclass);
+
+
+--
+-- TOC entry 4061 (class 2604 OID 27790)
+-- Name: food id; Type: DEFAULT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.food ALTER COLUMN id SET DEFAULT nextval('jbcaridad.food_id_seq'::regclass);
+
+
+--
+-- TOC entry 4064 (class 2604 OID 27800)
+-- Name: ingredients id; Type: DEFAULT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.ingredients ALTER COLUMN id SET DEFAULT nextval('jbcaridad.ingredients_id_seq'::regclass);
+
+
+--
+-- TOC entry 4065 (class 2604 OID 27808)
+-- Name: order_detail id; Type: DEFAULT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.order_detail ALTER COLUMN id SET DEFAULT nextval('jbcaridad.order_detail_id_seq'::regclass);
+
+
+--
+-- TOC entry 4068 (class 2604 OID 27818)
+-- Name: order_header id; Type: DEFAULT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.order_header ALTER COLUMN id SET DEFAULT nextval('jbcaridad.order_header_id_seq'::regclass);
+
+
+--
+-- TOC entry 4071 (class 2604 OID 27828)
+-- Name: payment id; Type: DEFAULT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.payment ALTER COLUMN id SET DEFAULT nextval('jbcaridad.payment_id_seq'::regclass);
+
+
+--
+-- TOC entry 4072 (class 2604 OID 27836)
+-- Name: purchase_order id; Type: DEFAULT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.purchase_order ALTER COLUMN id SET DEFAULT nextval('jbcaridad.purchase_order_id_seq'::regclass);
+
+
+--
+-- TOC entry 4076 (class 2604 OID 27847)
+-- Name: recipe id; Type: DEFAULT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.recipe ALTER COLUMN id SET DEFAULT nextval('jbcaridad.recipe_id_seq'::regclass);
+
+
+--
+-- TOC entry 4077 (class 2604 OID 27855)
+-- Name: resto id; Type: DEFAULT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.resto ALTER COLUMN id SET DEFAULT nextval('jbcaridad.resto_id_seq'::regclass);
+
+
+--
+-- TOC entry 4081 (class 2604 OID 27866)
+-- Name: supplier id; Type: DEFAULT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.supplier ALTER COLUMN id SET DEFAULT nextval('jbcaridad.supplier_id_seq'::regclass);
+
+
+--
+-- TOC entry 4309 (class 0 OID 27874)
+-- Dependencies: 586
+-- Data for Name: customer; Type: TABLE DATA; Schema: jbcaridad; Owner: datama2mi182
+--
+
+INSERT INTO jbcaridad.customer VALUES (1, 'Caridad', 'John', 'Makati', 12412344, 1);
+INSERT INTO jbcaridad.customer VALUES (2, 'Cariaga', 'Kristine', 'Taguig', 786812312, 1);
+INSERT INTO jbcaridad.customer VALUES (3, 'Caridad', 'Asirrh', 'Makati', 21716237, 1);
+INSERT INTO jbcaridad.customer VALUES (4, 'Bunagan', 'Jhed', 'Taguig', 21312322, 1);
+INSERT INTO jbcaridad.customer VALUES (5, 'Bunaganda', 'Jhedi', 'Taguig', 812378677, 1);
+
+
+--
+-- TOC entry 4289 (class 0 OID 27773)
+-- Dependencies: 566
+-- Data for Name: employee; Type: TABLE DATA; Schema: jbcaridad; Owner: datama2mi182
+--
+
+
+
+--
+-- TOC entry 4291 (class 0 OID 27787)
+-- Dependencies: 568
+-- Data for Name: food; Type: TABLE DATA; Schema: jbcaridad; Owner: datama2mi182
+--
+
+INSERT INTO jbcaridad.food VALUES (1001, 'Chicken Sandwich', 59, 'Sandwich');
+INSERT INTO jbcaridad.food VALUES (1002, 'Tuna Sandwich', 59, 'Sandwich');
+INSERT INTO jbcaridad.food VALUES (1003, 'Ice Cream Sandwich', 69, 'Sandwich');
+INSERT INTO jbcaridad.food VALUES (1004, 'Chicken with Rice', 89, 'Rice Meal');
+INSERT INTO jbcaridad.food VALUES (1006, 'Torikatsudon', 129, 'Special Meal');
+
+
+--
+-- TOC entry 4293 (class 0 OID 27797)
+-- Dependencies: 570
+-- Data for Name: ingredients; Type: TABLE DATA; Schema: jbcaridad; Owner: datama2mi182
+--
+
+
+
+--
+-- TOC entry 4295 (class 0 OID 27805)
+-- Dependencies: 572
+-- Data for Name: order_detail; Type: TABLE DATA; Schema: jbcaridad; Owner: datama2mi182
+--
+
+INSERT INTO jbcaridad.order_detail VALUES (2001, 3, 'Chicken with Rice, Ice Cream Sandwich, Torikatsudon', NULL, 1004);
+INSERT INTO jbcaridad.order_detail VALUES (2002, 1, 'Chicken Sandwich', NULL, 1001);
+INSERT INTO jbcaridad.order_detail VALUES (2003, 1, 'Ice Cream Sandwich', NULL, 1003);
+INSERT INTO jbcaridad.order_detail VALUES (2004, 1, 'Torikatsudon', NULL, 1006);
+INSERT INTO jbcaridad.order_detail VALUES (2005, 1, 'Tuna Sandwich', NULL, 1002);
+
+
+--
+-- TOC entry 4297 (class 0 OID 27815)
+-- Dependencies: 574
+-- Data for Name: order_header; Type: TABLE DATA; Schema: jbcaridad; Owner: datama2mi182
+--
+
+INSERT INTO jbcaridad.order_header VALUES (1, '2019-10-31', 'Delivered', 1, 2004);
+INSERT INTO jbcaridad.order_header VALUES (2, '2019-11-01', 'On queue', 2, 2005);
+INSERT INTO jbcaridad.order_header VALUES (3, '2019-11-01', 'On queue', 3, 2003);
+INSERT INTO jbcaridad.order_header VALUES (4, '2019-11-04', 'On queue', 4, 2001);
+INSERT INTO jbcaridad.order_header VALUES (5, '2019-11-07', 'On queue', 5, 2002);
+
+
+--
+-- TOC entry 4299 (class 0 OID 27825)
+-- Dependencies: 576
+-- Data for Name: payment; Type: TABLE DATA; Schema: jbcaridad; Owner: datama2mi182
+--
+
+INSERT INTO jbcaridad.payment VALUES (201910311, 129, 130, 0, 0, 1, 1001, 1);
+
+
+--
+-- TOC entry 4301 (class 0 OID 27833)
+-- Dependencies: 578
+-- Data for Name: purchase_order; Type: TABLE DATA; Schema: jbcaridad; Owner: datama2mi182
+--
+
+
+
+--
+-- TOC entry 4303 (class 0 OID 27844)
+-- Dependencies: 580
+-- Data for Name: recipe; Type: TABLE DATA; Schema: jbcaridad; Owner: datama2mi182
+--
+
+
+
+--
+-- TOC entry 4305 (class 0 OID 27852)
+-- Dependencies: 582
+-- Data for Name: resto; Type: TABLE DATA; Schema: jbcaridad; Owner: datama2mi182
+--
+
+INSERT INTO jbcaridad.resto VALUES (1, 'Sauce Chef', '2012-12-12', 'Patick Volante');
+
+
+--
+-- TOC entry 4307 (class 0 OID 27863)
+-- Dependencies: 584
+-- Data for Name: supplier; Type: TABLE DATA; Schema: jbcaridad; Owner: datama2mi182
+--
+
+
+
+--
+-- TOC entry 4326 (class 0 OID 0)
+-- Dependencies: 585
+-- Name: customer_id_seq; Type: SEQUENCE SET; Schema: jbcaridad; Owner: datama2mi182
+--
+
+SELECT pg_catalog.setval('jbcaridad.customer_id_seq', 1, false);
+
+
+--
+-- TOC entry 4327 (class 0 OID 0)
+-- Dependencies: 565
+-- Name: employee_id_seq; Type: SEQUENCE SET; Schema: jbcaridad; Owner: datama2mi182
+--
+
+SELECT pg_catalog.setval('jbcaridad.employee_id_seq', 1, false);
+
+
+--
+-- TOC entry 4328 (class 0 OID 0)
+-- Dependencies: 567
+-- Name: food_id_seq; Type: SEQUENCE SET; Schema: jbcaridad; Owner: datama2mi182
+--
+
+SELECT pg_catalog.setval('jbcaridad.food_id_seq', 1, false);
+
+
+--
+-- TOC entry 4329 (class 0 OID 0)
+-- Dependencies: 569
+-- Name: ingredients_id_seq; Type: SEQUENCE SET; Schema: jbcaridad; Owner: datama2mi182
+--
+
+SELECT pg_catalog.setval('jbcaridad.ingredients_id_seq', 1, false);
+
+
+--
+-- TOC entry 4330 (class 0 OID 0)
+-- Dependencies: 571
+-- Name: order_detail_id_seq; Type: SEQUENCE SET; Schema: jbcaridad; Owner: datama2mi182
+--
+
+SELECT pg_catalog.setval('jbcaridad.order_detail_id_seq', 1, false);
+
+
+--
+-- TOC entry 4331 (class 0 OID 0)
+-- Dependencies: 573
+-- Name: order_header_id_seq; Type: SEQUENCE SET; Schema: jbcaridad; Owner: datama2mi182
+--
+
+SELECT pg_catalog.setval('jbcaridad.order_header_id_seq', 1, false);
+
+
+--
+-- TOC entry 4332 (class 0 OID 0)
+-- Dependencies: 575
+-- Name: payment_id_seq; Type: SEQUENCE SET; Schema: jbcaridad; Owner: datama2mi182
+--
+
+SELECT pg_catalog.setval('jbcaridad.payment_id_seq', 1, false);
+
+
+--
+-- TOC entry 4333 (class 0 OID 0)
+-- Dependencies: 577
+-- Name: purchase_order_id_seq; Type: SEQUENCE SET; Schema: jbcaridad; Owner: datama2mi182
+--
+
+SELECT pg_catalog.setval('jbcaridad.purchase_order_id_seq', 1, false);
+
+
+--
+-- TOC entry 4334 (class 0 OID 0)
+-- Dependencies: 579
+-- Name: recipe_id_seq; Type: SEQUENCE SET; Schema: jbcaridad; Owner: datama2mi182
+--
+
+SELECT pg_catalog.setval('jbcaridad.recipe_id_seq', 1, false);
+
+
+--
+-- TOC entry 4335 (class 0 OID 0)
+-- Dependencies: 581
+-- Name: resto_id_seq; Type: SEQUENCE SET; Schema: jbcaridad; Owner: datama2mi182
+--
+
+SELECT pg_catalog.setval('jbcaridad.resto_id_seq', 1, false);
+
+
+--
+-- TOC entry 4336 (class 0 OID 0)
+-- Dependencies: 583
+-- Name: supplier_id_seq; Type: SEQUENCE SET; Schema: jbcaridad; Owner: datama2mi182
+--
+
+SELECT pg_catalog.setval('jbcaridad.supplier_id_seq', 1, false);
+
+
+--
+-- TOC entry 4110 (class 2606 OID 27882)
+-- Name: customer customer_pkey; Type: CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.customer
+    ADD CONSTRAINT customer_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4090 (class 2606 OID 27784)
+-- Name: employee employee_pkey; Type: CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.employee
+    ADD CONSTRAINT employee_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4092 (class 2606 OID 27794)
+-- Name: food food_pkey; Type: CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.food
+    ADD CONSTRAINT food_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4094 (class 2606 OID 27802)
+-- Name: ingredients ingredients_pkey; Type: CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.ingredients
+    ADD CONSTRAINT ingredients_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4096 (class 2606 OID 27812)
+-- Name: order_detail order_detail_pkey; Type: CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.order_detail
+    ADD CONSTRAINT order_detail_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4098 (class 2606 OID 27822)
+-- Name: order_header order_header_pkey; Type: CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.order_header
+    ADD CONSTRAINT order_header_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4100 (class 2606 OID 27830)
+-- Name: payment payment_pkey; Type: CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.payment
+    ADD CONSTRAINT payment_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4102 (class 2606 OID 27841)
+-- Name: purchase_order purchase_order_pkey; Type: CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.purchase_order
+    ADD CONSTRAINT purchase_order_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4104 (class 2606 OID 27849)
+-- Name: recipe recipe_pkey; Type: CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.recipe
+    ADD CONSTRAINT recipe_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4106 (class 2606 OID 27860)
+-- Name: resto resto_pkey; Type: CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.resto
+    ADD CONSTRAINT resto_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4108 (class 2606 OID 27871)
+-- Name: supplier supplier_pkey; Type: CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.supplier
+    ADD CONSTRAINT supplier_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4113 (class 2606 OID 28179)
+-- Name: order_header customer_order_header_fkey; Type: FK CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.order_header
+    ADD CONSTRAINT customer_order_header_fkey FOREIGN KEY (customer_id) REFERENCES jbcaridad.customer(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- TOC entry 4120 (class 2606 OID 28037)
+-- Name: customer customer_resto_fkey; Type: FK CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.customer
+    ADD CONSTRAINT customer_resto_fkey FOREIGN KEY (resto_id) REFERENCES jbcaridad.resto(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- TOC entry 4111 (class 2606 OID 28047)
+-- Name: employee employee_resto_fkey; Type: FK CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.employee
+    ADD CONSTRAINT employee_resto_fkey FOREIGN KEY (resto_id) REFERENCES jbcaridad.resto(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- TOC entry 4112 (class 2606 OID 28022)
+-- Name: order_detail order_detail_food_fkey; Type: FK CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.order_detail
+    ADD CONSTRAINT order_detail_food_fkey FOREIGN KEY (food_id) REFERENCES jbcaridad.food(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- TOC entry 4114 (class 2606 OID 28027)
+-- Name: order_header order_header_order_detail_fkey; Type: FK CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.order_header
+    ADD CONSTRAINT order_header_order_detail_fkey FOREIGN KEY (order_detail_id) REFERENCES jbcaridad.order_detail(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- TOC entry 4115 (class 2606 OID 28032)
+-- Name: payment payment_order_header_fkey; Type: FK CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.payment
+    ADD CONSTRAINT payment_order_header_fkey FOREIGN KEY (order_header_id) REFERENCES jbcaridad.order_header(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- TOC entry 4117 (class 2606 OID 28052)
+-- Name: purchase_order purchase_order_resto_fkey; Type: FK CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.purchase_order
+    ADD CONSTRAINT purchase_order_resto_fkey FOREIGN KEY (resto_id) REFERENCES jbcaridad.resto(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- TOC entry 4116 (class 2606 OID 28042)
+-- Name: purchase_order purchase_order_supplier_fkey; Type: FK CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.purchase_order
+    ADD CONSTRAINT purchase_order_supplier_fkey FOREIGN KEY (supplier_id) REFERENCES jbcaridad.supplier(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- TOC entry 4119 (class 2606 OID 28017)
+-- Name: recipe recipe_food_fkey; Type: FK CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.recipe
+    ADD CONSTRAINT recipe_food_fkey FOREIGN KEY (food_id) REFERENCES jbcaridad.food(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- TOC entry 4118 (class 2606 OID 27899)
+-- Name: recipe recipe_ingredients_fkey; Type: FK CONSTRAINT; Schema: jbcaridad; Owner: datama2mi182
+--
+
+ALTER TABLE ONLY jbcaridad.recipe
+    ADD CONSTRAINT recipe_ingredients_fkey FOREIGN KEY (ingredients_id) REFERENCES jbcaridad.ingredients(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+-- Completed on 2019-12-12 13:21:59
+
+--
+-- PostgreSQL database dump complete
+--
+
