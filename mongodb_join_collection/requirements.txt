@@ -1,0 +1,6 @@
+Assignment submission instructions:
+
+    On github, use your INDIVIDUAL apc_datama2_shared_database repository  to upload the files for this exercise
+Create a folder called: mongodb_join_collection
+    Upload the screenshots for this assignment to this folder
+    Submit the link to your uploaded github folder for this assignment
